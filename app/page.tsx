@@ -1,4 +1,4 @@
-import Article from "@/components/article/Article";
+import Articles from "@/components/articles/Articles";
 import Blog from "@/components/blog/Blog";
 import Link from "next/link";
 
@@ -17,7 +17,7 @@ export default function HomePage() {
           <span>→</span>
         </Link>
       </div>
-      <Article />
+      <Articles />
 
       <div className="mt-12 pt-8 border-t border-zinc-200 flex items-center justify-between">
         <h2 className="text-lg md:text-xl lg:text-2xl text-zinc-700">
@@ -32,9 +32,6 @@ export default function HomePage() {
         </Link>
       </div>
 
-      {/* <h2 className="text-lg md:text-xl lg:text-2xl text-zinc-700 mt-12 pt-8 border-t border-zinc-200">
-        ブログ記事
-      </h2> */}
       <Blog limit={4} />
     </div>
   );

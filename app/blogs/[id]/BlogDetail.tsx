@@ -3,15 +3,7 @@ import { MicrocmsData } from "@/domain/Blog";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-
-function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+import { formatDate } from "@/utils/date";
 
 export default function BlogDetail() {
   const params = useParams();

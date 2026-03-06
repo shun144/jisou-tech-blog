@@ -1,13 +1,7 @@
-"use client";
 import { QiitaData } from "@/domain/Article";
-import { memo, useEffect, useState } from "react";
-import Card from "../Card";
+import { useEffect, useState } from "react";
 
-interface Props {
-  perPage?: number;
-}
-
-const Article = ({ perPage = 4 }: Props) => {
+export const useArticles = (perPage: number) => {
   const [qiitaDataList, setQiitaDataList] = useState<QiitaData[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -32,23 +26,5 @@ const Article = ({ perPage = 4 }: Props) => {
     })();
   }, []);
 
-  if (!isLoaded) {
-    return <div>Loading中</div>;
-  }
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {qiitaDataList.map((x) => (
-        <Card
-          key={x.id}
-          title={x.title}
-          imageSrc={`https://picsum.photos/seed/${x.id}/800/450`}
-          createdAt={x.created_at}
-          href={`https://qiita.com/shun123/items/${x.id}`}
-        />
-      ))}
-    </div>
-  );
+  return { isLoaded, qiitaDataList };
 };
-
-export default memo(Article);

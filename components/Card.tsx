@@ -1,13 +1,6 @@
+import { formatDate } from "@/utils/date";
 import Image from "next/image";
 import Link from "next/link";
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
 
 interface Props {
   title: string;

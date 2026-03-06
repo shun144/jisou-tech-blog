@@ -1,4 +1,4 @@
-import Article from "@/components/article/Article";
+import Articles from "@/components/articles/Articles";
 import Link from "next/link";
 
 export default function page() {
@@ -16,7 +16,7 @@ export default function page() {
           トップページに戻る
         </Link>
       </div>
-      <Article perPage={10} />
+      <Articles perPage={10} />
     </div>
   );
 }
