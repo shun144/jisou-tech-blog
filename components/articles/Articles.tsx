@@ -1,6 +1,6 @@
 "use client";
 import { memo } from "react";
-import Card from "../Card";
+import Card from "../card/Card";
 import { useArticles } from "./useArticles";
 import { getArticleHref, getArticleImageSrc } from "@/utils/url";
 

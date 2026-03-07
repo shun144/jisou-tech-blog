@@ -2,13 +2,13 @@ import { render } from "@testing-library/react";
 import Blogs from "../Blogs";
 import { useBlogs } from "../useBlogs";
 import { MicrocmsData } from "@/domain/Blog";
-import Card from "@/components/Card";
+import Card from "@/components/card/Card";
 
 jest.mock("../useBlogs", () => ({
   useBlogs: jest.fn(),
 }));
 
-jest.mock("@/components/Card", () => ({
+jest.mock("@/components/card/Card", () => ({
   __esModule: true,
   default: jest.fn(() => <article />),
 }));
