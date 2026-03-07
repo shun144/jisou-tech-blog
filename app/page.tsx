@@ -1,5 +1,5 @@
 import Articles from "@/components/articles/Articles";
-import Blog from "@/components/blog/Blog";
+import Blog from "@/components/blogs/Blogs";
 import Link from "next/link";
 
 export default function HomePage() {

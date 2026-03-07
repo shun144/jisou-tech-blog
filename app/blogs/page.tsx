@@ -1,4 +1,4 @@
-import Blog from "@/components/blog/Blog";
+import Blog from "@/components/blogs/Blogs";
 import Link from "next/link";
 
 export default function page() {
