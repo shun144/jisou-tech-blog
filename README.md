@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Markdown Editor - 技術ブログ開発メモ
 
-## Getting Started
+## 概要
 
-First, run the development server:
+Next.js で構築した技術ブログの開発課題として、マークダウンエディタ機能を実装する。  
+すでに Firebase App Hosting を利用していたため、早期実装を目指し DB は Firestore、ストレージは Firebase Storage を採用した。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 背景・方針
+
+- Next.js 技術ブログ開発の 1 課題として、マークダウンエディタを実装する
+- すでに Firebase App Hosting を利用していたため、DB・ストレージも Firebase で統一し早期実装を目指す
+- 今回のスコープでは記事の追加投稿機能は無し。1 記事をデフォルトとし、その編集のみを行う
+- 機能を制限した分、セキュリティ（XSS 対策など）を重点的に強化する
+
+---
+
+## スタック
+
+| 役割                       | 技術                                               |
+| -------------------------- | -------------------------------------------------- |
+| フロントエンド             | Next.js                                            |
+| バックエンド               | Next.js（Server Actions メイン）                   |
+| ホスティング・自動デプロイ | Firebase App Hosting（GitHub push で自動デプロイ） |
+| データベース               | Firestore                                          |
+| ストレージ                 | Firebase Storage                                   |
+| ソースコード管理           | GitHub                                             |
+
+**認証：なし**（今回はマークダウンエディタの実装がメイン）
+
+---
+
+## MVP ロードマップ
+
+### MVP 1：画面の骨格を作る
+
+- トップページにマイブログ見出しを作る
+- マイブログ記事カードを1件表示する（内容はダミー）
+- 記事参照画面・編集画面のルーティングを設定する
+
+### MVP 2：編集機能を実装する
+
+- マークダウンエディタを実装する（左：エディタ／右：プレビュー）
+- タイトル編集フォームを実装する
+- 下書き保存ボタンを実装する（Firestoreに保存、公開には非反映）
+- 公開ボタンを実装する（確認メッセージ → OK で公開反映）
+
+### MVP 3：Firestore 連携
+
+- Firestore に記事データを登録する（初期データ投入）
+- 記事一覧・記事参照画面でFirestoreのデータを取得・表示する
+
+### MVP 4：画像アップロード
+
+- 画面キャプチャの貼り付けで、URLを画像を Firebase Storage に保存・取得する（容量制限あり）
+
+### MVP 5：セキュリティ強化
+
+- マークダウンレンダリング時のXSSサニタイズ対応（DOMPurify 等）
+- Firebase Storage のアップロードバリデーション（ファイルサイズ・拡張子）
+- Firestore セキュリティルールの設定
+
+### ✅ 今回のスコープ
+
+- トップページにマイブログ見出しを作る
+- マイブログ記事カードを1件表示する（内容はダミー）
+- マイブログ記事カードをクリックすると詳細表示画面へ遷移
+- マイブログ記事詳細表示画面構成
+  - タイトル
+  - 更新日
+  - 本文
+  - 編集ボタン（クリックするとマイブログ記事編集画面へ遷移）
+- マイブログ記事編集画面構成
+  - タイトル編集フォーム
+  - マークダウンエディタ（画面左）
+  - プレビュー（画面右）
+  - 下書き保存ボタン
+  - 公開ボタン
+- マークダウンエディタの実装
+- 記事内容を Firestore に保存・取得
+- 記事内画像を Firebase Storage に保存（容量制限あり）
+- 誰でも編集可能（認証なし）
+- XSS 対策などセキュリティの強化
+
+### 残課題
+
+- エディタの画像挿入時とundoとredo(CodeMirrorへの移行が必要かも)
+
+### ✅ 画面設計
+
+#### 画面構成
+
+| 画面         | URL（予定）            | 説明                                         |
+| ------------ | ---------------------- | -------------------------------------------- |
+| トップページ | `/`                    | 「マイブログ」タイトルで記事カードを一覧表示 |
+| 記事参照画面 | `/posts/{postId}`      | 記事カードをクリックすると本文を表示         |
+| 編集画面     | `/posts/{postId}/edit` | Qiita風マークダウンエディタ                  |
+
+#### 画面遷移・操作フロー
+
+```
+トップページ（記事カード一覧）
+  └── 記事カードをクリック
+        └── 記事参照画面
+              └── 右上「編集」ボタンをクリック
+                    └── 編集画面（マークダウンエディタ）
+                          ├── 「下書き保存」ボタン
+                          │     └── Firestore に保存（トップ・参照画面には非反映）
+                          └── 「公開」ボタン
+                                └── 確認メッセージ表示 → OK でトップ・参照画面に反映
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### 記事のステータス管理
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| ステータス          | 説明                                                     |
+| ------------------- | -------------------------------------------------------- |
+| `draft`（下書き）   | 編集中の状態。トップページ・記事参照画面には表示されない |
+| `published`（公開） | 公開済みの状態。トップページ・記事参照画面に反映される   |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🔜 次回 MVP
 
-## Learn More
+- Firebase Auth で認証追加（投稿者のみ編集可能に）
+- GitHub Actions で CI/CD（テスト自動化）
+- 記事の追加投稿機能
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## セキュリティ方針
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+機能をシンプルに絞った分、セキュリティを重点的に対応する。
 
-## Deploy on Vercel
+- **XSS 対策**：マークダウンをHTMLにレンダリングする際、`DOMPurify` 等でサニタイズ処理を行う
+- **ストレージ**：アップロード前にファイルサイズ・拡張子をバリデーション
+- **Firestore セキュリティルール**：読み書きの範囲を最小限に設定
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## データ設計（予定）
+
+### Firestore
+
+```
+posts/（コレクション）
+  └── {postId}/（ドキュメント）
+        ├── title: "記事タイトル"
+        ├── content: "本文（Markdown）"
+        ├── draftContent: "下書き本文（Markdown）"
+        ├── status: "draft" | "published"
+        ├── createdAt: timestamp
+        └── updatedAt: timestamp
+```
+
+### Firebase Storage
+
+```
+/posts/{postId}/{imageId}  # 記事内画像
+```
