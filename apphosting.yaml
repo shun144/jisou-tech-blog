@@ -30,3 +30,11 @@ env:
     value: https://qiita.com/api/v2
   - variable: MICRO_CMS_API_BASE_URL
     value: https://t4vqxjujxd.microcms.io/api/v1
+  - variable: FB_PROJECT_ID
+    value: jisou-tech-blog
+  - variable: FB_CLIENT_EMAIL
+    value: firebase-adminsdk-fbsvc@jisou-tech-blog.iam.gserviceaccount.com
+  - variable: FB_STORAGE_BUCKET
+    value: jisou-tech-blog.firebasestorage.app
+  - variable: FB_PRIVATE_KEY
+    secret: FB_PRIVATE_KEY

@@ -17,6 +17,8 @@ describe("validateのテスト", () => {
 
   test("jpg以外の拡張子はエラーになる", () => {
     const file = new File([""], "test.exe", { type: "application/exe" });
-    expect(() => validateUploadImage(file)).toThrow("拡張子が不正です");
+    expect(() => validateUploadImage(file)).toThrow(
+      "画像ファイル（JPEG / PNG / GIF / WebP）のみアップロード可能です",
+    );
   });
 });

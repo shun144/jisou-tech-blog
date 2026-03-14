@@ -5,7 +5,7 @@ import { adminStorage } from "@/lib/firebase/admin";
 export async function uploadImage(file: File) {
   try {
     const fileName = `image/${Date.now()}_${file.name}`;
-    const bucket = adminStorage.bucket(process.env.FIREBASE_STORAGE_BUCKET);
+    const bucket = adminStorage.bucket(process.env.FB_STORAGE_BUCKET);
     const fileRef = bucket.file(fileName);
 
     const buffer = Buffer.from(await file.arrayBuffer());
