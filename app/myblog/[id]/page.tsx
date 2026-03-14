@@ -1,18 +1,10 @@
 import Header from "@/components/header";
 import Preview from "@/features/editor/components/preview";
-import { FirebaseRepository } from "@/features/myblogs/infrastructure/firebase-repository";
-import { cacheLife } from "next/cache";
+import { getMyblogDetailData } from "@/features/myblogs/queries/myblog-queries";
+
 import Link from "next/link";
 interface Props {
   params: Promise<{ id: string }>;
-}
-
-async function getMyblogDetailData(id: string) {
-  "use cache";
-  cacheLife("hours");
-  const repo = new FirebaseRepository();
-  const data = await repo.get(id);
-  return data.toPlainObject();
 }
 
 export default async function MyblogDetailPage({ params }: Props) {
