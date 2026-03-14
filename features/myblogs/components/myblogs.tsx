@@ -1,23 +1,19 @@
-import { getArticleImageSrc } from "@/utils/url";
 import Card from "@/features/card/components/card";
+import { FirebaseRepository } from "@/features/myblogs/infrastructure/firebase-repository";
+import { connection } from "next/server";
 
-export default function MyBlogs() {
-  const dataList = [
-    {
-      id: "jrid_uzlaakf",
-      title: "title1",
-      imageSrc: getArticleImageSrc("1"),
-      createdAt: "2026-03-09T08:00:00",
-    },
-  ];
+export default async function MyBlogs() {
+  await connection();
+  const repo = new FirebaseRepository();
+  const myblogsData = await repo.getAll();
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {dataList.map((x) => (
+      {myblogsData.map((x) => (
         <Card
           key={x.id}
           title={x.title}
-          imageSrc={x.imageSrc}
+          imageSrc={x.thumbnailUrl}
           createdAt={x.createdAt}
           href={`/myblog/${x.id}`}
         />

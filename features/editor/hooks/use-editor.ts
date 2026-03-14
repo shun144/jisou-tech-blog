@@ -1,17 +1,12 @@
 "use client";
-import { storage } from "@/infrastructure/firebase/config";
+import { uploadImage } from "@/features/editor/actions/upload-image-action";
 import { validateUploadImage } from "@/utils/validate";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-export const useEditor = (
-  markdownRef: RefObject<string>,
-  initialMarkdownValue?: string,
-) => {
-  const [markdownValue, setMarkdownValue] = useState<string | undefined>(
-    initialMarkdownValue,
-  );
+export const useEditor = (initialMarkdownValue: string) => {
+  const [markdownValue, setMarkdownValue] =
+    useState<string>(initialMarkdownValue);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const cursorPosRef = useRef<number>(0);
 
@@ -45,13 +40,6 @@ export const useEditor = (
     };
   }, []);
 
-  const uploadImage = useCallback(async (file: File): Promise<string> => {
-    const fileName = `image/${Date.now()}_${file.name}`;
-    const storageRef = ref(storage, fileName);
-    const snapshot = await uploadBytes(storageRef, file);
-    return await getDownloadURL(snapshot.ref);
-  }, []);
-
   const insertImageWithOptimisticUpdate = useCallback(
     async (file: File) => {
       try {
@@ -68,12 +56,9 @@ export const useEditor = (
       const pos = cursorPosRef.current;
 
       // プレースホルダー挿入
-      setMarkdownValue((prev) => {
-        const val = prev ?? "";
-        const next = val.slice(0, pos) + placeholder + "\n" + val.slice(pos);
-        markdownRef.current = next;
-        return next;
-      });
+      setMarkdownValue(
+        (prev) => prev.slice(0, pos) + placeholder + "\n" + prev.slice(pos),
+      );
 
       const posWithPlaceholder = pos + placeholder.length + 1;
 
@@ -89,14 +74,12 @@ export const useEditor = (
       try {
         const url = await uploadImage(file);
         const imageMd = `![image](${url})`;
-        const placeholderIndex = markdownRef.current.indexOf(placeholder);
 
+        let placeholderIndex = -1;
         // アップロード成功時
         setMarkdownValue((prev) => {
-          const val = prev ?? "";
-          const next = val.replace(placeholder, imageMd);
-          markdownRef.current = next;
-          return next;
+          placeholderIndex = prev.indexOf(placeholder);
+          return prev.replace(placeholder, imageMd);
         });
 
         requestAnimationFrame(() => {
@@ -111,12 +94,7 @@ export const useEditor = (
         });
       } catch {
         // アップロード失敗時
-        setMarkdownValue((prev) => {
-          const val = prev ?? "";
-          const next = val.replace(placeholder, "");
-          markdownRef.current = next;
-          return next;
-        });
+        setMarkdownValue((prev) => prev.replace(placeholder, ""));
       }
     },
     [uploadImage],
@@ -146,7 +124,6 @@ export const useEditor = (
     handlePaste,
     handleDrop,
     markdownValue,
-    markdownRef,
     setMarkdownValue,
   };
 };

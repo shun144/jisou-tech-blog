@@ -1,14 +1,14 @@
 import { render } from "@testing-library/react";
-import Blogs from "../components/blogs";
-import { useBlogs } from "../hooks/use-blogs";
+import Blogs from "@/features/blogs/components/blogs";
+import { useBlogs } from "@/features/blogs/hooks/use-blogs";
 import { MicrocmsData } from "@/domain/Blog";
 import Card from "@/features/card/components/card";
 
-jest.mock("../useBlogs", () => ({
+jest.mock("@/features/blogs/hooks/use-blogs", () => ({
   useBlogs: jest.fn(),
 }));
 
-jest.mock("@/components/card/Card", () => ({
+jest.mock("@/features/card/components/card", () => ({
   __esModule: true,
   default: jest.fn(() => <article />),
 }));
@@ -20,7 +20,7 @@ const dummyDataList = [
     eyecatch: {
       url: "https://sample",
     },
-    content: "<div>sample</div>",
+    contentMarkdown: "<div>sample</div>",
     createdAt: "2026-03-07T12:00:00",
   },
 ] as MicrocmsData[];
@@ -71,7 +71,7 @@ describe("Blogsコンポーネントのテスト", () => {
       expect(Card).toHaveBeenCalledWith(
         {
           title,
-          imageSrc: eyecatch.url,
+          imageSrc: eyecatch!.url,
           createdAt,
           href: `/blogs/${id}`,
         },

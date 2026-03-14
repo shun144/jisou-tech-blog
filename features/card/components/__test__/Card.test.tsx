@@ -1,5 +1,5 @@
 import { getArticleImageSrc } from "@/utils/url";
-import Card from "../components/Card";
+import Card from "@/features/card/components/card";
 import { render, screen } from "@testing-library/react";
 
 describe("Cardコンポーネントのテスト", () => {

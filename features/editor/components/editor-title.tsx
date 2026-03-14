@@ -1,5 +1,3 @@
-import { RefObject } from "react";
-
 interface Props {
   onChange?: (event: React.ChangeEvent<HTMLInputElement, Element>) => void;
   initialTitle?: string;

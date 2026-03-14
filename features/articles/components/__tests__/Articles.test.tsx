@@ -1,15 +1,15 @@
 import { QiitaData } from "@/domain/Article";
 import { render } from "@testing-library/react";
 import Articles from "../articles";
-import { useArticles } from "../../hooks/use-articles";
+import { useArticles } from "@/features/articles/hooks/use-articles";
 import Card from "@/features/card/components/card";
 import { getArticleHref, getArticleImageSrc } from "@/utils/url";
 
-jest.mock("../useArticles", () => ({
+jest.mock("@/features/articles/hooks/use-articles", () => ({
   useArticles: jest.fn(),
 }));
 
-jest.mock("@/components/card/Card", () => ({
+jest.mock("@/features/card/components/card", () => ({
   __esModule: true,
   default: jest.fn(() => <article />),
 }));

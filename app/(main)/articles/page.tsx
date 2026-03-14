@@ -6,7 +6,7 @@ export default function page() {
     <div>
       <div className="flex items-center justify-between">
         <h2 className="text-lg md:text-xl lg:text-2xl text-zinc-700">
-          個人記事一覧
+          Qiita記事一覧
         </h2>
         <Link
           href="/"

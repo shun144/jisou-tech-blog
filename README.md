@@ -155,6 +155,11 @@ Next.js で構築した技術ブログの開発課題として、マークダウ
 
 ---
 
+# firebase-adminを使う
+
+npm install firebase-admin --save
+https://firebase.google.com/docs/admin/setup?hl=ja
+
 ## 🔜 次回 MVP
 
 - Firestore の導入（下書き保存、閲覧ログなど）

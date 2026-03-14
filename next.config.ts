@@ -10,7 +10,6 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "picsum.photos" },
     ],
   },
-  /* config options here */
   cacheComponents: true,
 };
 

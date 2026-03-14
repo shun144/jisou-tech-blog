@@ -1,12 +1,23 @@
-import Link from "next/link";
 import Header from "@/components/header";
-import MyblogView from "@/features/myblogs/components/myblog-view";
+import Preview from "@/features/editor/components/preview";
+import { FirebaseRepository } from "@/features/myblogs/infrastructure/firebase-repository";
+import { cacheLife } from "next/cache";
+import Link from "next/link";
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function page(props: Props) {
-  const { id } = await props.params;
+async function getMyblogDetailData(id: string) {
+  "use cache";
+  cacheLife("hours");
+  const repo = new FirebaseRepository();
+  const data = await repo.get(id);
+  return data.toPlainObject();
+}
+
+export default async function MyblogDetailPage({ params }: Props) {
+  const { id } = await params;
+  const myblogData = await getMyblogDetailData(id);
 
   return (
     <>
@@ -18,8 +29,9 @@ export default async function page(props: Props) {
           編集
         </Link>
       </Header>
+
       <main className="flex-1 max-w-7xl mx-auto py-6 w-full flex flex-col">
-        <MyblogView id={id} />
+        <Preview myblogData={myblogData} />
       </main>
     </>
   );
